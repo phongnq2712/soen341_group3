@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
-import java.util.Arrays;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -131,10 +130,12 @@ public class Process extends JFrame {
 	            	}
 	            }
 	            model2.addRow(new Object[] {"", "", "", "", supplierName + " - Total:", total});
-	        	if(total < 5000) {
+	        	if(total > 0 && total < 5000) {
 	        		JOptionPane.showMessageDialog(null, "The lowest quotation from "+ supplierName + ": $" + total + " \nYour request is approved!");
-	        	} else {
+	        	} else if(total > 5000) {
 	        		JOptionPane.showMessageDialog(null, "The lowest quotation from "+ supplierName + ": $" + total + " \nYour request is pending as it is greater than $5000");
+	        	} else {
+	        		JOptionPane.showMessageDialog(null, "Please enter the quantity for items");
 	        	}
 	        }
 	      }
