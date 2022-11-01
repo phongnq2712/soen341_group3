@@ -17,6 +17,7 @@ public class Process extends JFrame {
 	DefaultTableModel model2;
 	int seqItemRequest = 0;
 	Business bussiness = new Business();
+	Quotations quotations = new Quotations();
 	
 	public Process() {
 		// TODO Auto-generated constructor stub
@@ -114,7 +115,7 @@ public class Process extends JFrame {
 	            		columnData[i] = table.getValueAt(i, 1) + "-" + table.getValueAt(i, 3);
 	            	}
 	             }
-	            Quotations[] lowestQuotationObj = bussiness.getTheLowestQuotation(columnData);
+	            Quotations[] lowestQuotationObj = quotations.getTheLowestQuotation(columnData);
 	            int seqNo = 0;
 	            String supplierName = "";
 	            int total = 0;
