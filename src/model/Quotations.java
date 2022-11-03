@@ -1,5 +1,6 @@
 package model;
 
+import java.security.interfaces.RSAKey;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -77,36 +78,49 @@ public class Quotations {
 		int sumCostco = 0;
 		int sumSuperC = 0;
 		Connection con = JavaSQLite.connectDB();
-		Statement stmt;
-		for (int i = 0; i < data.length; i++) {
-			if(data[i] != null) {
-				String[] parts = ((String) data[i]).split("-");
-	            try {
-	            	stmt = con.createStatement();
-	            	for(int j = 0; j < suppliersName.length; j++) {
-	            		ResultSet rs = stmt.executeQuery("SELECT price FROM quotations WHERE supplier_name LIKE '%"+suppliersName[j]+"%' "
-	            				+ " AND name LIKE'%" + parts[0] + "%'");
-						if (rs.next()) {
-							String price = rs.getString("price");
-							int sumItem = Integer.parseInt(price) * Integer.parseInt(parts[1]);
-							if(suppliersName[j].equals("Walmart")) {
-								sumWalmart += sumItem;
-								objWM[i] = new Quotations(parts[0], "Kg", price, parts[1], suppliersName[j]); //[] {suppliersName[j], price, parts[1]};
-							} else if (suppliersName[j].equals("Costco")) {
-								sumCostco += sumItem;
-								objCostCo[i] = new Quotations(parts[0], "Kg", price, parts[1], suppliersName[j]);
-							} else {
-								sumSuperC += sumItem;
-								objSuperC[i] = new Quotations(parts[0], "Kg", price, parts[1], suppliersName[j]);
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			for (int i = 0; i < data.length; i++) {
+				if(data[i] != null) {
+					String[] parts = ((String) data[i]).split("-");
+		            
+		            	stmt = con.createStatement();
+		            	for(int j = 0; j < suppliersName.length; j++) {
+		            		rs = stmt.executeQuery("SELECT price FROM quotations WHERE supplier_name LIKE '%"+suppliersName[j]+"%' "
+		            				+ " AND name LIKE'%" + parts[0] + "%'");
+							if (rs.next()) {
+								String price = rs.getString("price");
+								int sumItem = Integer.parseInt(price) * Integer.parseInt(parts[1]);
+								if(suppliersName[j].equals("Walmart")) {
+									sumWalmart += sumItem;
+									objWM[i] = new Quotations(parts[0], "Kg", price, parts[1], suppliersName[j]); //[] {suppliersName[j], price, parts[1]};
+								} else if (suppliersName[j].equals("Costco")) {
+									sumCostco += sumItem;
+									objCostCo[i] = new Quotations(parts[0], "Kg", price, parts[1], suppliersName[j]);
+								} else {
+									sumSuperC += sumItem;
+									objSuperC[i] = new Quotations(parts[0], "Kg", price, parts[1], suppliersName[j]);
+								}
 							}
-						}
-	            	}
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+		            	}
+					
 				}
 			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+				stmt.close();
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		
 		System.out.println(sumWalmart);
 		System.out.println(sumCostco);
 		System.out.println(sumSuperC);

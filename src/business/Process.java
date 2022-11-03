@@ -10,13 +10,15 @@ import javax.swing.table.TableCellRenderer;
 
 import model.JavaSQLite;
 import model.Quotations;
+import model.Requests;
 
 public class Process extends JFrame {
 	private static final long serialVersionUID = 1L;
 	JButton button = new JButton();
 	DefaultTableModel model2;
 	int seqItemRequest = 0;
-	Business bussiness = new Business();
+//	Connection con = JavaSQLite.connectDB();
+	Requests requests = new Requests();
 	Quotations quotations = new Quotations();
 	
 	public Process() {
@@ -40,17 +42,19 @@ public class Process extends JFrame {
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        JPanel outerPanel = new JPanel();
-        outerPanel.setLayout(new BoxLayout(outerPanel, BoxLayout.PAGE_AXIS));
+        JPanel makeRequestPanel = new JPanel();
+        makeRequestPanel.setLayout(new BoxLayout(makeRequestPanel, BoxLayout.PAGE_AXIS));
 
         String itemName = "";
         int itemQty = 0;
+        Statement stmt = null;
+        ResultSet rs = null;
+        Connection con = JavaSQLite.connectDB();
         try {
-        	Connection con = JavaSQLite.connectDB();
 //        	PreparedStatement pst = con.prepareStatement("select * from items");
 //            ResultSet rs = pst.executeQuery();
-        	Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT distinct name FROM quotations");
+        	stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT distinct name FROM quotations");
             int seq = 0;
             while (rs.next()) {
             	seq ++;
@@ -67,6 +71,15 @@ public class Process extends JFrame {
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+        	try {
+				stmt.close();
+				rs.close();
+				con.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
         // Submit button
         JButton btnCalculate = new JButton("Submit");
@@ -94,10 +107,10 @@ public class Process extends JFrame {
         
         JLabel lblFirst = new JLabel("Enter quantity of items you need:");
         
-        outerPanel.add(lblFirst);
-        outerPanel.add(scroll);
-        outerPanel.add(btnCalculate);
-        outerPanel.add(label);
+        makeRequestPanel.add(lblFirst);
+        makeRequestPanel.add(scroll);
+        makeRequestPanel.add(btnCalculate);
+        makeRequestPanel.add(label);
         
         btnCalculate.addActionListener(
 	      new ActionListener()
@@ -133,6 +146,8 @@ public class Process extends JFrame {
 	            model2.addRow(new Object[] {"", "", "", "", supplierName + " - Total:", total});
 	        	if(total > 0 && total < 5000) {
 	        		JOptionPane.showMessageDialog(null, "The lowest quotation from "+ supplierName + ": $" + total + " \nYour request is approved!");
+	        		// save to DB - table Requests
+	        		requests.saveRequest(total, 1, "This request is approved!");
 	        	} else if(total > 5000) {
 	        		JOptionPane.showMessageDialog(null, "The lowest quotation from "+ supplierName + ": $" + total + " \nYour request is pending as it is greater than $5000");
 	        	} else {
@@ -142,13 +157,9 @@ public class Process extends JFrame {
 	      }
 	    );       
         
-        outerPanel.add(scroll2);
-        // Total label
-//        JLabel totalLabel = new JLabel("Total:");
-//        outerPanel.add(totalLabel);
-        outerPanel.add(Box.createRigidArea(new Dimension(0,5)));
-//        frame1.add(scroll);
-        frame1.add(outerPanel);
+        makeRequestPanel.add(scroll2);
+        makeRequestPanel.add(Box.createRigidArea(new Dimension(0,5)));
+        frame1.add(makeRequestPanel);
         frame1.setVisible(true);
         frame1.setSize(400, 300);
 	}

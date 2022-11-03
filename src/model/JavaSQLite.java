@@ -10,8 +10,10 @@ public class JavaSQLite {
 	public static Connection connectDB() {
 		Connection cnn = null;
 		try {
-			Class.forName("org.sqlite.JDBC");
-			cnn = DriverManager.getConnection("jdbc:sqlite:group3.db");
+//			if(cnn == null) {
+				Class.forName("org.sqlite.JDBC");
+				cnn = DriverManager.getConnection("jdbc:sqlite:group3.db");	
+//			}
 		} catch(Exception ex) {
 			JOptionPane.showMessageDialog(null, ex);
 		}
