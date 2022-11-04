@@ -9,15 +9,15 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public class Requests {
+public class User {
 	
 	
-	public Requests() {
+	public User() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	
-	public DefaultTableModel getAllRequests(DefaultTableModel model, int userId) {
+	public DefaultTableModel getAllRequests(DefaultTableModel model) {
 		Statement stmt = null;
         ResultSet rs = null;
         Connection con = JavaSQLite.connectDB();
@@ -30,7 +30,7 @@ public class Requests {
 //        	PreparedStatement pst = con.prepareStatement("select * from items");
 //            ResultSet rs = pst.executeQuery();
         	stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT requestId, total, status, description FROM requests WHERE userId = " + userId);
+            rs = stmt.executeQuery("SELECT requestId, total, status, description FROM requests");
             while (rs.next()) {
                 reqId = rs.getInt("requestId");
                 total = rs.getInt("total");
@@ -66,20 +66,30 @@ public class Requests {
 	}
 	
 	/**
-	 * Save requests to DB
+	 * Check user login to the system
 	 * @param data
 	 * @return
 	 */
-	public void saveRequest(int userId, int total, int stt, String des) {
-		PreparedStatement stmt = null;
+	public int[] checkLogin(String userName, String pwd) {
+		Statement stmt = null;
+		ResultSet rs = null;
+		int[] result = new int[2];
+		int userId = 0;
+		int role = 0;
     	Connection con = JavaSQLite.connectDB();
 		try {
-			
-			String sql = "INSERT INTO requests(userId, total, status, description) "
-					+ "VALUES(" + userId +"," + total + "," + stt + "," + "'" + des + "')";
-			stmt = con.prepareStatement(sql);
-			stmt.execute();
-			System.out.println("Inserted a new request");
+			stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT userId, role FROM user WHERE userName = " + "'" + userName +"' AND password=" + "'"+ pwd +"'");
+            if (rs.next()) {
+                userId = rs.getInt("userId");
+                role = rs.getInt("role");
+                if(userId > 0) {
+                	result[0] = userId;
+                	result[1] = role;
+                	
+                	return result;
+                }
+            }
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -89,12 +99,16 @@ public class Requests {
 				if(stmt != null) {
 					stmt.close();
 				}
+				if(rs != null) {
+					rs.close();
+				}
 				con.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		
+		return result;
 	}
 	
 }

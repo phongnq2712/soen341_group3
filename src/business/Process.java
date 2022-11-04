@@ -11,16 +11,20 @@ import javax.swing.table.TableCellRenderer;
 import model.JavaSQLite;
 import model.Quotations;
 import model.Requests;
+import model.User;
 
 public class Process extends JFrame {
 	private static final long serialVersionUID = 1L;
 	JButton button = new JButton();
 	DefaultTableModel model2;
 	int seqItemRequest = 0;
+	User user = new User();
 	Requests requests = new Requests();
 	Quotations quotations = new Quotations();
 	DefaultTableModel modelRq = new DefaultTableModel();
 	JTable tableRequests = new JTable();
+	JTable tableLowestQuo = new JTable();
+	int userId = 0;
 	/**
 	 * Build all requests table
 	 * @return
@@ -36,7 +40,7 @@ public class Process extends JFrame {
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        requests.getAllRequests(modelRq);
+        requests.getAllRequests(modelRq, userId);
         tableRequests.setModel(modelRq);
         
         return scroll;
@@ -67,6 +71,11 @@ public class Process extends JFrame {
         
         JPanel outPanel = new JPanel();
         outPanel.setLayout(new BoxLayout(outPanel, BoxLayout.PAGE_AXIS));
+        JPanel logoutPanel = new JPanel();
+        JButton btnLogout = new JButton("Logout");
+        logoutPanel.add(btnLogout);
+        logoutPanel.setVisible(false);
+        
         JPanel makeRequestPanel = new JPanel();
         makeRequestPanel.setLayout(new BoxLayout(makeRequestPanel, BoxLayout.PAGE_AXIS));
 
@@ -112,13 +121,11 @@ public class Process extends JFrame {
         // table 2
         String[] columnNames2 = {"No.", "Name", "Unit", "Price", "Qty", "Price * Qty"};
         
-        JTable table2 = new JTable();
-        
-        table2.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        table2.setFillsViewportHeight(true);
+        tableLowestQuo.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tableLowestQuo.setFillsViewportHeight(true);
         
         // result table
-        JScrollPane scroll2 = new JScrollPane(table2);
+        JScrollPane scroll2 = new JScrollPane(tableLowestQuo);
         scroll2.setHorizontalScrollBarPolicy(
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll2.setVerticalScrollBarPolicy(
@@ -146,7 +153,7 @@ public class Process extends JFrame {
 	        {
 	        	model2 = new DefaultTableModel();
 	        	model2.setColumnIdentifiers(columnNames2);
-	        	table2.setModel(model2);
+	        	tableLowestQuo.setModel(model2);
 	        	Object[] columnData = new Object[table.getRowCount()];  // One entry for each row
 //	            Object[] rowData = new Object [table.getRowCount()];
 	            for (int i = 0; i < table.getRowCount(); i++) {  // Loop through the rows
@@ -174,10 +181,10 @@ public class Process extends JFrame {
 	        	if(total > 0 && total < 5000) {
 	        		JOptionPane.showMessageDialog(null, "The lowest quotation from "+ supplierName + ": $" + total + " \nYour request is approved!");
 	        		// save to DB - table Requests
-	        		requests.saveRequest(total, 1, "This request is approved!");
+	        		requests.saveRequest(userId, total, 1, "This request is approved!");
 	        	} else if(total > 5000) {
 	        		JOptionPane.showMessageDialog(null, "The lowest quotation from "+ supplierName + ": $" + total + " \nYour request is pending as it is greater than $5000");
-	        		requests.saveRequest(total, 2, "This request is pending for approval");
+	        		requests.saveRequest(userId, total, 2, "This request is pending for approval");
 	        	} else {
 	        		JOptionPane.showMessageDialog(null, "Please enter the quantity for items");
 	        	}
@@ -187,6 +194,7 @@ public class Process extends JFrame {
         
         makeRequestPanel.add(scroll2);
         makeRequestPanel.add(Box.createRigidArea(new Dimension(0,5)));
+        outPanel.add(logoutPanel);
         outPanel.add(makeRequestPanel);
         
         // View all requests panel
@@ -199,7 +207,35 @@ public class Process extends JFrame {
         viewRequestsPanel.add(btnBackMakeRequest);
         viewRequestsPanel.add(Box.createRigidArea(new Dimension(10,0)));
         viewRequestsPanel.setVisible(false);
+        makeRequestPanel.setVisible(false);
+        // Login panel
+        JPanel loginPanel = new JPanel();
+        loginPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         
+        JPanel userNamePanel = new JPanel();
+        JLabel lblUserName = new JLabel("User Name:");
+        userNamePanel.add(lblUserName);
+        JTextField txtUserName = new JTextField();
+        txtUserName.setColumns(10);
+        userNamePanel.add(txtUserName);
+        
+        JPanel pwdPanel = new JPanel();
+        JLabel lblPwd = new JLabel("Password:");
+        pwdPanel.add(lblPwd);
+        JPasswordField txtPwd = new JPasswordField();
+        txtPwd.setColumns(10);
+        pwdPanel.add(txtPwd);
+        
+        JPanel btnLoginPanel = new JPanel();
+        btnLoginPanel.setPreferredSize(new Dimension(300, 50));
+        JButton btnLogin = new JButton("Login");
+        btnLoginPanel.add(btnLogin);
+        
+        loginPanel.add(userNamePanel);
+        loginPanel.add(pwdPanel);
+        loginPanel.add(btnLoginPanel);
+        
+        outPanel.add(loginPanel);
         outPanel.add(viewRequestsPanel);
         
         frame1.add(outPanel);
@@ -214,7 +250,7 @@ public class Process extends JFrame {
 	        	makeRequestPanel.setVisible(false);
 	        	viewRequestsPanel.setVisible(true);
 	        	((DefaultTableModel)tableRequests.getModel()).setRowCount(0);
-	        	tableRequests.setModel(requests.getAllRequests(modelRq));
+	        	tableRequests.setModel(requests.getAllRequests(modelRq, userId));
 	        }
 	      }
 	    );
@@ -227,7 +263,49 @@ public class Process extends JFrame {
   	        	viewRequestsPanel.setVisible(false);
   	        }
   	      }
-  	    ); 
+  	    );
+        btnLogin.addActionListener(
+  	      new ActionListener()
+  	      {
+  	        public void actionPerformed(ActionEvent event)
+  	        {
+  	        	int[] userArr = user.checkLogin(txtUserName.getText().trim(), txtPwd.getText().trim());
+  	        	if(userArr.length > 0) {
+  	        		loginPanel.setVisible(false);
+  	        		logoutPanel.setVisible(true);
+  	        		userId = userArr[0];
+  	        		if(userArr[1] == 1) {
+  	        			// user role
+  	        			makeRequestPanel.setVisible(true);
+  	        			((DefaultTableModel)tableLowestQuo.getModel()).setRowCount(0);
+  	  	  	        	viewRequestsPanel.setVisible(false);
+  	  	  	        	
+  	        		} else if(userArr[1] == 2) {
+  	        			// vendors role
+  	        		} else {
+  	        			// admin role
+  	        			makeRequestPanel.setVisible(false);
+  	  	  	        	viewRequestsPanel.setVisible(true);
+  	        		}
+  	        	} else {
+  	        		JOptionPane.showMessageDialog(null, "User Name or Password is not correct!\nPlease try again!");
+  	        	}
+  	        	
+  	        }
+  	      }
+  	    );
+        btnLogout.addActionListener(
+	      new ActionListener()
+	      {
+	        public void actionPerformed(ActionEvent event)
+	        {
+	        	loginPanel.setVisible(true);
+	        	viewRequestsPanel.setVisible(false);
+	        	makeRequestPanel.setVisible(false);
+	        	logoutPanel.setVisible(false);
+	        }
+	      }
+	    );
 	}
 	
 	class ButtonRenderer extends JButton implements TableCellRenderer {
