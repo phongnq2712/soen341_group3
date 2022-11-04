@@ -17,15 +17,37 @@ public class Process extends JFrame {
 	JButton button = new JButton();
 	DefaultTableModel model2;
 	int seqItemRequest = 0;
-//	Connection con = JavaSQLite.connectDB();
 	Requests requests = new Requests();
 	Quotations quotations = new Quotations();
+	DefaultTableModel modelRq = new DefaultTableModel();
+	JTable tableRequests = new JTable();
+	/**
+	 * Build all requests table
+	 * @return
+	 */
+	public JScrollPane buildGridRequest() {
+		String[] columnNames = {"Request Id", "Total", "Status", "Description"};
+		modelRq.setColumnIdentifiers(columnNames);
+        tableRequests.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tableRequests.setFillsViewportHeight(true);
+        
+        JScrollPane scroll = new JScrollPane(tableRequests);
+        scroll.setHorizontalScrollBarPolicy(
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        requests.getAllRequests(modelRq);
+        tableRequests.setModel(modelRq);
+        
+        return scroll;
+	}
 	
 	public Process() {
 		// TODO Auto-generated constructor stub
 		String[] columnNames = {"No.", "Name", "Unit", "Qty"};
 		JFrame frame1 = new JFrame("Procurement System");
         frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
 //        frame1.setLayout(new SpringLayout());
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(columnNames);
@@ -42,6 +64,9 @@ public class Process extends JFrame {
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        
+        JPanel outPanel = new JPanel();
+        outPanel.setLayout(new BoxLayout(outPanel, BoxLayout.PAGE_AXIS));
         JPanel makeRequestPanel = new JPanel();
         makeRequestPanel.setLayout(new BoxLayout(makeRequestPanel, BoxLayout.PAGE_AXIS));
 
@@ -110,6 +135,8 @@ public class Process extends JFrame {
         makeRequestPanel.add(lblFirst);
         makeRequestPanel.add(scroll);
         makeRequestPanel.add(btnCalculate);
+        JButton btnViewRequests = new JButton("View all requests");
+        makeRequestPanel.add(btnViewRequests);
         makeRequestPanel.add(label);
         
         btnCalculate.addActionListener(
@@ -150,6 +177,7 @@ public class Process extends JFrame {
 	        		requests.saveRequest(total, 1, "This request is approved!");
 	        	} else if(total > 5000) {
 	        		JOptionPane.showMessageDialog(null, "The lowest quotation from "+ supplierName + ": $" + total + " \nYour request is pending as it is greater than $5000");
+	        		requests.saveRequest(total, 2, "This request is pending for approval");
 	        	} else {
 	        		JOptionPane.showMessageDialog(null, "Please enter the quantity for items");
 	        	}
@@ -159,9 +187,47 @@ public class Process extends JFrame {
         
         makeRequestPanel.add(scroll2);
         makeRequestPanel.add(Box.createRigidArea(new Dimension(0,5)));
-        frame1.add(makeRequestPanel);
+        outPanel.add(makeRequestPanel);
+        
+        // View all requests panel
+        JPanel viewRequestsPanel = new JPanel();
+        viewRequestsPanel.setLayout(new BoxLayout(viewRequestsPanel, BoxLayout.PAGE_AXIS));
+        JLabel lblViewRQ = new JLabel("All requests:");
+        viewRequestsPanel.add(lblViewRQ);
+        viewRequestsPanel.add(buildGridRequest());
+        JButton btnBackMakeRequest = new JButton("Back to make new request");
+        viewRequestsPanel.add(btnBackMakeRequest);
+        viewRequestsPanel.add(Box.createRigidArea(new Dimension(10,0)));
+        viewRequestsPanel.setVisible(false);
+        
+        outPanel.add(viewRequestsPanel);
+        
+        frame1.add(outPanel);
         frame1.setVisible(true);
         frame1.setSize(400, 300);
+        
+        btnViewRequests.addActionListener(
+	      new ActionListener()
+	      {
+	        public void actionPerformed(ActionEvent event)
+	        {
+	        	makeRequestPanel.setVisible(false);
+	        	viewRequestsPanel.setVisible(true);
+	        	((DefaultTableModel)tableRequests.getModel()).setRowCount(0);
+	        	tableRequests.setModel(requests.getAllRequests(modelRq));
+	        }
+	      }
+	    );
+        btnBackMakeRequest.addActionListener(
+  	      new ActionListener()
+  	      {
+  	        public void actionPerformed(ActionEvent event)
+  	        {
+  	        	makeRequestPanel.setVisible(true);
+  	        	viewRequestsPanel.setVisible(false);
+  	        }
+  	      }
+  	    ); 
 	}
 	
 	class ButtonRenderer extends JButton implements TableCellRenderer {

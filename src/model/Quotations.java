@@ -112,8 +112,12 @@ public class Quotations {
 			e.printStackTrace();
 		} finally {
 			try {
-				rs.close();
-				stmt.close();
+				if(rs != null) {
+					rs.close();
+				}
+				if(stmt != null) {
+					stmt.close();
+				}
 				con.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
