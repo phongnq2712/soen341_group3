@@ -9,7 +9,7 @@ public class testing {
 
   
   @test
-  public void testGetTheLowestQuotation( )
+  public void testGetTheLowestQuotation()
   {
     int sum =0;
     Quotations q = new Quotations();
