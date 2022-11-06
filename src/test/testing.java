@@ -14,12 +14,12 @@ public class testing {
     int sum =0;
     Quotations q = new Quotations();
      Object[] data = new Object[3];
-       data[0] = new Object("Fish-5");
-       data[1]= new Object("Beef-7");
-       data[2]= new Object("Chicken-8");
+       data[0] ="Fish-5";
+       data[1]= "Beef-7";
+       data[2]= "Chicken-8";
      Quotations[] lowest = q.getTheLowestQuotation(data);
-    for(Quotations q: lowest) {
-	            	if(q != null) {
+    for(Quotations quo: lowest) {
+	            	if(quo: !null){
         				
         				sum += Integer.parseInt(q.getPrice()) * Integer.parseInt(q.getQty());
         				
