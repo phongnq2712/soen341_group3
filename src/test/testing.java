@@ -13,7 +13,7 @@ public class testing {
   {
     int sum =0;
     Quotations q = new Quotations();
-     Object[] data = new Object[3]
+     Object[] data = new Object[3];
        data[0] = new Object("Fish-5");
        data[1]= new Object("Beef-7");
        data[2]= new Object("Chicken-8");
