@@ -286,6 +286,8 @@ public class Process extends JFrame {
   	        			// admin role
   	        			makeRequestPanel.setVisible(false);
   	  	  	        	viewRequestsPanel.setVisible(true);
+  	  	  	        	((DefaultTableModel)tableRequests.getModel()).setRowCount(0);
+  	  	  	        	tableRequests.setModel(requests.getAllRequests(modelRq, userId));
   	        		}
   	        	} else {
   	        		JOptionPane.showMessageDialog(null, "User Name or Password is not correct!\nPlease try again!");

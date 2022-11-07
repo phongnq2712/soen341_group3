@@ -30,7 +30,13 @@ public class Requests {
 //        	PreparedStatement pst = con.prepareStatement("select * from items");
 //            ResultSet rs = pst.executeQuery();
         	stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT requestId, total, status, description FROM requests WHERE userId = " + userId);
+            String sql = "";
+            if(userId == 1) {
+            	sql = "SELECT requestId, total, status, description FROM requests ORDER BY status DESC";
+            } else {
+            	sql = "SELECT requestId, total, status, description FROM requests WHERE userId = " + userId;
+            }
+        	rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 reqId = rs.getInt("requestId");
                 total = rs.getInt("total");
