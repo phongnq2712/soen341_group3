@@ -270,7 +270,7 @@ public class Process extends JFrame {
   	        public void actionPerformed(ActionEvent event)
   	        {
   	        	int[] userArr = user.checkLogin(txtUserName.getText().trim(), txtPwd.getText().trim());
-  	        	if(userArr.length > 0) {
+  	        	if(userArr.length > 0 && userArr[0] > 0 && userArr[1] > 0) {
   	        		loginPanel.setVisible(false);
   	        		logoutPanel.setVisible(true);
   	        		userId = userArr[0];
