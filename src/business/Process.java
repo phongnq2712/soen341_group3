@@ -242,6 +242,23 @@ public class Process extends JFrame {
         frame1.setVisible(true);
         frame1.setSize(400, 300);
         
+		
+	// account creation 
+        JLabel lblNewLabel_5 = new JLabel("No account? click here to create");
+        loginPanel.add(lblNewLabel_5);
+	
+        JButton btnNewButton_2 = new JButton("create account");
+        loginPanel.add(btnNewButton_2);
+        
+    	btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+		   UserAcctCreation.main(null);
+ 		 			}; 
+ 		});
+		frame1.setEnabled(true);  	 		
+        // account creation 
+
+		
         btnViewRequests.addActionListener(
 	      new ActionListener()
 	      {
