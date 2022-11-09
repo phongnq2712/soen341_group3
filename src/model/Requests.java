@@ -1,6 +1,5 @@
 package model;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,7 +10,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.swing.DefaultCellEditor;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -213,8 +211,22 @@ public class Requests {
 		PreparedStatement stmt = null;
     	Connection con = JavaSQLite.connectDB();
 		try {
+			String description = "";
+			switch (stt) {
+			case 0: {
+				description = "This request is closed!";
+				break;
+			}
+			case 1: {
+				description = "This request is approved!";
+				break;
+			}
+			default:
+				description = "This request is pending for approval";
+				break;
+			}
 			
-			String sql = "UPDATE requests SET status = " + stt + " WHERE requestId = " + requestId;
+			String sql = "UPDATE requests SET status = " + stt + ", description= '"+ description +"'"+ " WHERE requestId = " + requestId;
 			stmt = con.prepareStatement(sql);
 			stmt.execute();
 			System.out.println("Updated the request!");

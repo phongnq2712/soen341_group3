@@ -12,6 +12,7 @@ import model.JavaSQLite;
 import model.Quotations;
 import model.Requests;
 import model.User;
+import model.UserAcctCreation;
 
 public class Process extends JFrame {
 	private static final long serialVersionUID = 1L;
