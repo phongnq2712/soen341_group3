@@ -295,6 +295,7 @@ public class Process extends JFrame {
 	        {
 	        	makeRequestPanel.setVisible(false);
 	        	viewRequestsPanel.setVisible(true);
+	        	viewRequestsPanel.add(btnBackMakeRequest);
 	        	((DefaultTableModel)tableRequests.getModel()).setRowCount(0);
 	        	tableRequests.setModel(requests.getAllRequests(modelRq, tableRequests, userId));
 	        }
@@ -333,6 +334,7 @@ public class Process extends JFrame {
   	        			// admin role
   	        			makeRequestPanel.setVisible(false);
   	  	  	        	viewRequestsPanel.setVisible(true);
+  	  	  	        	viewRequestsPanel.remove(btnBackMakeRequest);
   	  	  	        	((DefaultTableModel)tableRequests.getModel()).setRowCount(0);
   	  	  	        	tableRequests.setModel(requests.getAllRequests(modelRq, tableRequests, userId));
   	        		}
