@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -211,46 +212,58 @@ public class Process extends JFrame {
         makeRequestPanel.setVisible(false);
         // Login panel
         JPanel loginPanel = new JPanel();
-        loginPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        loginPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        loginPanel.setLayout(null);
+//        loginPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         
         JPanel userNamePanel = new JPanel();
         JLabel lblUserName = new JLabel("User Name:");
         userNamePanel.add(lblUserName);
+        
+        lblUserName.setBounds(36, 44, 112, 16);
+        loginPanel.add(lblUserName);
+        
         JTextField txtUserName = new JTextField();
-        txtUserName.setColumns(10);
-        userNamePanel.add(txtUserName);
+//        txtUserName.setColumns(10);
+        txtUserName.setBounds(171, 39, 123, 26);
+//        userNamePanel.add(txtUserName);
+        loginPanel.add(txtUserName);
         
-        JPanel pwdPanel = new JPanel();
+//        JPanel pwdPanel = new JPanel();
         JLabel lblPwd = new JLabel("Password:");
-        pwdPanel.add(lblPwd);
+        lblPwd.setBounds(36, 73, 112, 16);
+        loginPanel.add(lblPwd);
         JPasswordField txtPwd = new JPasswordField();
-        txtPwd.setColumns(10);
-        pwdPanel.add(txtPwd);
+        txtPwd.setBounds(171, 73, 123, 26);
+        loginPanel.add(txtPwd);
         
-        JPanel btnLoginPanel = new JPanel();
-        btnLoginPanel.setPreferredSize(new Dimension(300, 50));
+//        JPanel btnLoginPanel = new JPanel();
+//        btnLoginPanel.setPreferredSize(new Dimension(300, 50));
         JButton btnLogin = new JButton("Login");
-        btnLoginPanel.add(btnLogin);
+        btnLogin.setBounds(128, 118, 117, 29);
+        loginPanel.add(btnLogin);
         
-        loginPanel.add(userNamePanel);
-        loginPanel.add(pwdPanel);
-        loginPanel.add(btnLoginPanel);
+//        loginPanel.add(userNamePanel);
+//        loginPanel.add(pwdPanel);
+//        loginPanel.add(btnLoginPanel);
         
         outPanel.add(loginPanel);
         outPanel.add(viewRequestsPanel);
         
         frame1.add(outPanel);
         frame1.setVisible(true);
-        frame1.setSize(400, 300);
+        frame1.setSize(600, 400);
 
-	// account creation 
-        JLabel lblNewLabel_5 = new JLabel("No account? click here to create");
-        loginPanel.add(lblNewLabel_5);
+        // account creation 
+        JLabel lblNewAccount = new JLabel("Don't have an account?");
+        lblNewAccount.setBounds(48, 158, 197, 29);
+        loginPanel.add(lblNewAccount);
 	
-        JButton btnNewButton_2 = new JButton("create account");
-        loginPanel.add(btnNewButton_2);
+        JButton btnRegister = new JButton("Create account");
+        btnRegister.setBounds(198, 158, 132, 29);
+        loginPanel.add(btnRegister);
         
-    	btnNewButton_2.addActionListener(new ActionListener() {
+    	btnRegister.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 		   UserAcctCreation.main(null);
  		 			}; 
