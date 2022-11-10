@@ -78,7 +78,7 @@ public class UserAcctCreation extends JFrame {
 					
 					
 					JComboBox comboBoxRole = new JComboBox();
-					comboBoxRole.setModel(new DefaultComboBoxModel(new String[] {"User", "Supervisor", "Provider"}));
+					comboBoxRole.setModel(new DefaultComboBoxModel(new String[] {"User", "Provider", "Supervisor"}));
 					comboBoxRole.setBounds(191, 150, 123, 27);
 					AcctCreationPane.add(comboBoxRole);
 
