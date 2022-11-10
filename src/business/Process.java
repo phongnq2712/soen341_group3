@@ -210,39 +210,50 @@ public class Process extends JFrame {
         viewRequestsPanel.add(Box.createRigidArea(new Dimension(10,0)));
         viewRequestsPanel.setVisible(false);
         makeRequestPanel.setVisible(false);
-        // Login panel
+       // Login panel
+        GridLayout experimentLayout = new GridLayout(0,1);
         JPanel loginPanel = new JPanel();
-        loginPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        loginPanel.setLayout(null);
+        loginPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        loginPanel.setLayout(experimentLayout);
+        loginPanel.setMaximumSize(new Dimension(200,150));
+        //loginPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        //oginPanel.setLayout(null);
 //        loginPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         
-        JPanel userNamePanel = new JPanel();
+        //JPanel userNamePanel = new JPanel();
         JLabel lblUserName = new JLabel("User Name:");
-        userNamePanel.add(lblUserName);
-        
-        lblUserName.setBounds(36, 44, 112, 16);
         loginPanel.add(lblUserName);
         
+        //lblUserName.setBounds(36, 44, 112, 16);
+        //loginPanel.add(lblUserName);
+        
         JTextField txtUserName = new JTextField();
-//        txtUserName.setColumns(10);
-        txtUserName.setBounds(171, 39, 123, 26);
+        txtUserName.setColumns(10);
+        //txtUserName.setBounds(171, 39, 123, 26);
 //        userNamePanel.add(txtUserName);
+        
         loginPanel.add(txtUserName);
         
 //        JPanel pwdPanel = new JPanel();
         JLabel lblPwd = new JLabel("Password:");
-        lblPwd.setBounds(36, 73, 112, 16);
+        //lblPwd.setBounds(36, 73, 112, 16);
         loginPanel.add(lblPwd);
         JPasswordField txtPwd = new JPasswordField();
-        txtPwd.setBounds(171, 73, 123, 26);
+        //txtPwd.setBounds(171, 73, 123, 26);
+        txtPwd.setColumns(10);
         loginPanel.add(txtPwd);
         
 //        JPanel btnLoginPanel = new JPanel();
 //        btnLoginPanel.setPreferredSize(new Dimension(300, 50));
+        JLabel space = new JLabel("");
+        loginPanel.add(space);
+       // loginPanel.add(space);
         JButton btnLogin = new JButton("Login");
-        btnLogin.setBounds(128, 118, 117, 29);
+        //btnLogin.setBounds(128, 118, 117, 29);
+//        btnLogin.setLocation(2,2);
+//        btnLogin.setSize(1,1);
         loginPanel.add(btnLogin);
-        
+        //loginPanel.add(space);
 //        loginPanel.add(userNamePanel);
 //        loginPanel.add(pwdPanel);
 //        loginPanel.add(btnLoginPanel);
@@ -255,12 +266,14 @@ public class Process extends JFrame {
         frame1.setSize(600, 400);
 
         // account creation 
+        JLabel space1 = new JLabel("");
+        loginPanel.add(space1);
         JLabel lblNewAccount = new JLabel("Don't have an account?");
-        lblNewAccount.setBounds(48, 158, 197, 29);
+        //lblNewAccount.setBounds(48, 158, 197, 29);
         loginPanel.add(lblNewAccount);
 	
         JButton btnRegister = new JButton("Create account");
-        btnRegister.setBounds(198, 158, 132, 29);
+       // btnRegister.setBounds(198, 158, 132, 29);
         loginPanel.add(btnRegister);
         
     	btnRegister.addActionListener(new ActionListener() {
