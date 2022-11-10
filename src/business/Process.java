@@ -233,6 +233,8 @@ public class Process extends JFrame {
 //        userNamePanel.add(txtUserName);
         
         loginPanel.add(txtUserName);
+        JLabel spacePwd = new JLabel("");
+        loginPanel.add(spacePwd);
         
 //        JPanel pwdPanel = new JPanel();
         JLabel lblPwd = new JLabel("Password:");
