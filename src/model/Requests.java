@@ -69,7 +69,7 @@ public class Requests {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public DefaultTableModel getAllRequests(DefaultTableModel model, JTable tableRequests, int userId) {
+	public DefaultTableModel getAllRequests(DefaultTableModel model, JTable tableRequests, int userId, int userRole) {
 		Statement stmt = null;
         ResultSet rs = null;
         Connection con = JavaSQLite.connectDB();
@@ -89,7 +89,7 @@ public class Requests {
 //            ResultSet rs = pst.executeQuery();
         	stmt = con.createStatement();
             String sql = "";
-            if(userId == 1) {
+            if(userRole == 3) {
             	sql = "SELECT requestId, total, status, description FROM requests ORDER BY status DESC";
             } else {
             	sql = "SELECT requestId, total, status, description FROM requests WHERE userId = " + userId;
@@ -107,15 +107,15 @@ public class Requests {
                 } else {
                 	status = "Pending";
                 }
-                if(userId != 1) {
+//                if(userId != 3) {
                 	model.addRow(new Object[]{reqId, total, status, description});	
-                } else {
-                	// admin role
-                	model.addRow(new Object[]{reqId, total, status, description});
-                }
+//                } else {
+//                	// admin role
+//                	model.addRow(new Object[]{reqId, total, status, description});
+//                }
                 
             }
-            if(userId == 1) {
+            if(userRole == 3) {
             	TableColumn column = tableRequests.getColumnModel().getColumn(2);
             	column.setCellEditor(new DefaultCellEditor(cbbStatus));
             	model.addTableModelListener(new TableModelListener() {

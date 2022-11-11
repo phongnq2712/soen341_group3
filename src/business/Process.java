@@ -27,6 +27,7 @@ public class Process extends JFrame {
 	JTable tableRequests = new JTable();
 	JTable tableLowestQuo = new JTable();
 	int userId = 0;
+	int userRole = 0;
 	/**
 	 * Build all requests table
 	 * @return
@@ -42,7 +43,7 @@ public class Process extends JFrame {
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        requests.getAllRequests(modelRq, tableRequests, userId);
+        requests.getAllRequests(modelRq, tableRequests, userId, userRole);
         tableRequests.setModel(modelRq);
         
         return scroll;
@@ -297,7 +298,7 @@ public class Process extends JFrame {
 	        	viewRequestsPanel.setVisible(true);
 	        	viewRequestsPanel.add(btnBackMakeRequest);
 	        	((DefaultTableModel)tableRequests.getModel()).setRowCount(0);
-	        	tableRequests.setModel(requests.getAllRequests(modelRq, tableRequests, userId));
+	        	tableRequests.setModel(requests.getAllRequests(modelRq, tableRequests, userId, userRole));
 	        }
 	      }
 	    );
@@ -321,11 +322,12 @@ public class Process extends JFrame {
   	        		loginPanel.setVisible(false);
   	        		logoutPanel.setVisible(true);
   	        		userId = userArr[0];
+  	        		userRole = userArr[1];
   	        		if(userArr[1] == 1) {
   	        			// user role
   	        			makeRequestPanel.setVisible(true);
   	        			((DefaultTableModel)tableLowestQuo.getModel()).setRowCount(0);
-  	        			tableRequests.setModel(requests.getAllRequests(modelRq, tableRequests, userId));
+  	        			tableRequests.setModel(requests.getAllRequests(modelRq, tableRequests, userId, userRole));
   	  	  	        	viewRequestsPanel.setVisible(false);
   	  	  	        	
   	        		} else if(userArr[1] == 2) {
@@ -336,7 +338,7 @@ public class Process extends JFrame {
   	  	  	        	viewRequestsPanel.setVisible(true);
   	  	  	        	viewRequestsPanel.remove(btnBackMakeRequest);
   	  	  	        	((DefaultTableModel)tableRequests.getModel()).setRowCount(0);
-  	  	  	        	tableRequests.setModel(requests.getAllRequests(modelRq, tableRequests, userId));
+  	  	  	        	tableRequests.setModel(requests.getAllRequests(modelRq, tableRequests, userId, userRole));
   	        		}
   	        	} else {
   	        		JOptionPane.showMessageDialog(null, "User Name or Password is not correct!\nPlease try again!");
