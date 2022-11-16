@@ -33,35 +33,11 @@ public class Requests {
 	    public Component getTableCellEditorComponent(JTable table, Object value,
 	    boolean isSelected, int row, int column) 
 	    {
-//	    	seqItemRequest ++;
-//	    	model2.addRow(new Object[]{seqItemRequest, table.getValueAt(row, 1), table.getValueAt(row, 2)});
-//	    	label = (value == null) ? "Select" : value.toString();
-//	    	button.setText(label);
-//	    	button.setEnabled(false);
-	    	
-//	    	button.addActionListener(
-//	  	      new ActionListener()
-//	  	      {
-//	  	        public void actionPerformed(ActionEvent event)
-//	  	        {
-//	  	        	System.out.println("button clicked!");
-//	  	        	JOptionPane.showMessageDialog(null,"");
-//	  	        }
-//	  	      }
-//	  	    );
-//	    	return button;
-
 	    	System.out.println(value.toString());
 	    	
 	    	return aBox;
 	    	
 	    }
-//	    public Object getCellEditorValue() 
-//	    {
-//	    	System.out.println("getCellEditorValue");
-//	    	button.setEnabled(false);
-//	    	return new String(label);
-//	    }
 	  }
 	
 	public Requests() {
@@ -85,8 +61,6 @@ public class Requests {
     	cbbStatus.addItem("Pending");
     	
         try {
-//        	PreparedStatement pst = con.prepareStatement("select * from items");
-//            ResultSet rs = pst.executeQuery();
         	stmt = con.createStatement();
             String sql = "";
             if(userRole == 3) {
