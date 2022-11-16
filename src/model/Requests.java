@@ -21,9 +21,9 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 public class Requests {
+	Boolean flag = true;
 	class CbbEditor extends DefaultCellEditor 
 	  {
-	    private String label;
 	    private JComboBox<String> aBox = new JComboBox<String>();
 	    
 	    public CbbEditor(JComboBox<String> checkBox)
@@ -74,8 +74,8 @@ public class Requests {
         ResultSet rs = null;
         Connection con = JavaSQLite.connectDB();
         int total = 0;
-        int reqId;
-        int stt;
+        int reqId = 0;
+        int stt = 0;
         String status = "";
         String description = "";
         
@@ -107,48 +107,53 @@ public class Requests {
                 } else {
                 	status = "Pending";
                 }
-//                if(userId != 3) {
-                	model.addRow(new Object[]{reqId, total, status, description});	
-//                } else {
-//                	// admin role
-//                	model.addRow(new Object[]{reqId, total, status, description});
-//                }
+                model.addRow(new Object[]{reqId, total, status, description});	
                 
             }
             if(userRole == 3) {
+            	
             	TableColumn column = tableRequests.getColumnModel().getColumn(2);
             	column.setCellEditor(new DefaultCellEditor(cbbStatus));
             	model.addTableModelListener(new TableModelListener() {
-                    @Override
-                    public void tableChanged(TableModelEvent e) {
-                        int type = e.getType();
-                        switch (type) {
-                            case TableModelEvent.UPDATE:
-                                if (e.getFirstRow() - e.getLastRow() == 0) {
-                                    TableModel model = (TableModel) e.getSource();
-                                    int row = e.getFirstRow();
-                                    int col = e.getColumn();
-                                    int input = JOptionPane.showConfirmDialog(null, "Are you sure to update this record?");
-                                    String status = model.getValueAt(row, col).toString();
-                                    // 0=yes, 1=no, 2=cancel
-                                    System.out.println("input:" + input + " - value:"+ model.getValueAt(row, col));
-                                    if(input == 0 && !"".equals(status)) {
-                                    	// update status of the request chosen
-                                    	int requestId = Integer.parseInt(model.getValueAt(row, 0).toString());
-                                    	int stt = 0;
-                                    	if("Approved".equals(status)) {
-                                    		stt = 1;
-                                    	} else if("Pending".equals(status)) {
-                                    		stt = 2;
-                                    	}
-                                    	updateRequest(requestId, stt);
-                                    }
+                @Override
+                public void tableChanged(TableModelEvent e) {
+                    int type = e.getType();
+                    	switch (type) {
+                        case TableModelEvent.UPDATE:
+                            if (e.getFirstRow() - e.getLastRow() == 0) {
+                            	DefaultTableModel model = (DefaultTableModel) e.getSource();
+                                int row = e.getFirstRow();
+                                int col = e.getColumn();
+                                int input = 0;
+                                if(flag) {
+                                	input = JOptionPane.showConfirmDialog(null, "Are you sure to update this record?");
                                 }
-                                break;
-                        }
+                                
+                                String status = model.getValueAt(row, col).toString();
+                                // 0=yes, 1=no, 2=cancel
+                                System.out.println("input:" + input + " - value:"+ model.getValueAt(row, col));
+                                if(input == 0 && !"".equals(status)) {
+                                	// update status of the request chosen
+                                	int requestId = Integer.parseInt(model.getValueAt(row, 0).toString());
+                                	int stt = 0;
+                                	if("Approved".equals(status)) {
+                                		stt = 1;
+                                	} else if("Pending".equals(status)) {
+                                		stt = 2;
+                                	}
+                                	updateRequest(requestId, stt);
+                                	flag = true;
+                                } else {
+                                	flag = false;
+                                	model.setValueAt("Pending", row, col);
+                                }
+                            }
+                            break;
+                    	}
                     }
+                
                 });
-            }
+           }
             
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -212,25 +217,29 @@ public class Requests {
     	Connection con = JavaSQLite.connectDB();
 		try {
 			String description = "";
+			String status = "";
 			switch (stt) {
 			case 0: {
 				description = "This request is closed!";
+				status = "The status is changed to closed.";
 				break;
 			}
 			case 1: {
 				description = "This request is approved!";
+				status = "The status is changed to approved.";
 				break;
 			}
 			default:
 				description = "This request is pending for approval";
+				status = "The status is not changed.";
 				break;
 			}
 			
 			String sql = "UPDATE requests SET status = " + stt + ", description= '"+ description +"'"+ " WHERE requestId = " + requestId;
 			stmt = con.prepareStatement(sql);
 			stmt.execute();
+			JOptionPane.showMessageDialog(null, status);
 			System.out.println("Updated the request!");
-			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
