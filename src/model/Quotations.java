@@ -68,10 +68,11 @@ public class Quotations {
 	 * @param data
 	 * @return
 	 */
-	public Quotations[] getTheLowestQuotation(Object[] data) {
-		Quotations[] objWM = new Quotations[50];
-		Quotations[] objCostCo = new Quotations[50];
-		Quotations[] objSuperC = new Quotations[50];
+	public Object[] getTheLowestQuotation(Object[] data) {
+		Object[] result = new Object[2];
+		Quotations[] objWM = new Quotations[10];
+		Quotations[] objCostCo = new Quotations[10];
+		Quotations[] objSuperC = new Quotations[10];
 		String[] suppliersName = {"Walmart", "Costco", "SuperC"};
 		int sumWalmart = 0;
 		int sumCostco = 0;
@@ -129,13 +130,50 @@ public class Quotations {
 		System.out.println(sumSuperC);
 		System.out.println(Math.min(Math.min(sumWalmart, sumCostco), sumSuperC));
 		int theLowestQuotationValue = Math.min(Math.min(sumWalmart, sumCostco), sumSuperC);
-		if(theLowestQuotationValue == sumWalmart) {
-			return objWM;
-		} else if(theLowestQuotationValue == sumCostco) {
-			return objCostCo;
+//		if(theLowestQuotationValue == sumWalmart) {
+//			return objWM;
+//		} else if(theLowestQuotationValue == sumCostco) {
+//			return objCostCo;
+//		}
+//		
+//		return objSuperC;
+		String minSupplier = "";
+		if(theLowestQuotationValue > 0) {
+			if(theLowestQuotationValue == sumWalmart) {
+				result[0] = objWM;
+				minSupplier = "WM";
+			} else if(theLowestQuotationValue == sumCostco) {
+				result[0] = objCostCo;
+				minSupplier = "CC";
+			} else {
+				result[0] = objSuperC;
+				minSupplier = "SC";
+			}
+			if(theLowestQuotationValue > 5000) {
+				// return 2 lowest quotations
+				if("WM".equals(minSupplier)) {
+					if(sumCostco > sumSuperC) {
+						result[1] = objSuperC;
+					} else {
+						result[1] = objCostCo;
+					}
+				} else if ("CC".equals(minSupplier)) {
+					if(sumWalmart > sumSuperC) {
+						result[1] = objSuperC;
+					} else {
+						result[1] = objWM;
+					}
+				} else {
+					if(sumWalmart > sumCostco) {
+						result[1] = objCostCo;
+					} else {
+						result[1] = objWM;
+					}
+				}
+			}
 		}
 		
-		return objSuperC;
+		return result;
 	}
 	
 }

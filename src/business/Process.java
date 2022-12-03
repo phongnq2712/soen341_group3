@@ -19,6 +19,7 @@ public class Process extends JFrame {
 	private static final long serialVersionUID = 1L;
 	JButton button = new JButton();
 	DefaultTableModel model2;
+	DefaultTableModel model3;
 	int seqItemRequest = 0;
 	User user = new User();
 	Requests requests = new Requests();
@@ -26,6 +27,7 @@ public class Process extends JFrame {
 	DefaultTableModel modelRq = new DefaultTableModel();
 	JTable tableRequests = new JTable();
 	JTable tableLowestQuo = new JTable();
+	JTable tableSecondLowestQuo = new JTable();
 	int userId = 0;
 	int userRole = 0;
 	/**
@@ -165,29 +167,79 @@ public class Process extends JFrame {
 	            		columnData[i] = table.getValueAt(i, 1) + "-" + table.getValueAt(i, 3);
 	            	}
 	             }
-	            Quotations[] lowestQuotationObj = quotations.getTheLowestQuotation(columnData);
+//	            Quotations[] lowestQuotationObj = quotations.getTheLowestQuotation(columnData);
+	            Object[] lowestQuotationObj = quotations.getTheLowestQuotation(columnData);
+	            if(lowestQuotationObj.length > 1) {
+	            	model3 = new DefaultTableModel();
+	            	model3.setColumnIdentifiers(columnNames2);
+	            	tableSecondLowestQuo.setModel(model3);
+	            	tableSecondLowestQuo.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+	            	tableSecondLowestQuo.setFillsViewportHeight(true);
+	                
+	                // result table
+	                JScrollPane scroll3 = new JScrollPane(tableSecondLowestQuo);
+	                scroll3.setHorizontalScrollBarPolicy(
+	                        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	                scroll3.setVerticalScrollBarPolicy(
+	                        JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+	                makeRequestPanel.add(scroll3);
+	            }
+	            
 	            int seqNo = 0;
-	            String supplierName = "";
-	            int total = 0;
-	            for(Quotations q: lowestQuotationObj) {
-	            	if(q != null) {
-        				seqNo ++;
-        				total += Integer.parseInt(q.getPrice()) * Integer.parseInt(q.getQty());
-        				model2.addRow(new Object[] {seqNo, q.getName(), q.getUnit(), q.getPrice(), q.getQty(), 
-        						Integer.parseInt(q.getPrice()) * Integer.parseInt(q.getQty())});
-        				if("".equals(supplierName)) {
-        					supplierName = q.getSupplier();
-        				}
+	            String supplierName1 = "";
+	            String supplierName2 = "";
+	            int total1 = 0;
+	            int total2 = 0;
+//	            for(Quotations q: lowestQuotationObj) {
+//	            	if(q != null) {
+//        				seqNo ++;
+//        				total += Integer.parseInt(q.getPrice()) * Integer.parseInt(q.getQty());
+//        				model2.addRow(new Object[] {seqNo, q.getName(), q.getUnit(), q.getPrice(), q.getQty(), 
+//        						Integer.parseInt(q.getPrice()) * Integer.parseInt(q.getQty())});
+//        				if("".equals(supplierName)) {
+//        					supplierName = q.getSupplier();
+//        				}
+//	            	}
+//	            }
+	            for(int i = 0; i<lowestQuotationObj.length; i++) {
+	            	seqNo = 0;
+	            	if(lowestQuotationObj[i] != null) {
+	            		Quotations[] arrQuos = (Quotations[]) lowestQuotationObj[i];
+	            		for(int j=0; j< arrQuos.length; j++) {
+	            			Quotations q = (Quotations) arrQuos[j];
+	            			if(q != null) {
+	            				seqNo ++;
+		        				if(i == 0) {
+		        					total1 += Integer.parseInt(q.getPrice()) * Integer.parseInt(q.getQty());
+		        					model2.addRow(new Object[] {seqNo, q.getName(), q.getUnit(), q.getPrice(), q.getQty(), 
+			        						Integer.parseInt(q.getPrice()) * Integer.parseInt(q.getQty())});
+		        					if("".equals(supplierName1)) {
+			        					supplierName1 = q.getSupplier();
+			        				}
+		        				} else {
+		        					total2 += Integer.parseInt(q.getPrice()) * Integer.parseInt(q.getQty());
+		        					model3.addRow(new Object[] {seqNo, q.getName(), q.getUnit(), q.getPrice(), q.getQty(), 
+			        						Integer.parseInt(q.getPrice()) * Integer.parseInt(q.getQty())});
+		        					if("".equals(supplierName2)) {
+			        					supplierName2 = q.getSupplier();
+			        				}
+		        				}
+	            			}
+	            		}
 	            	}
 	            }
-	            model2.addRow(new Object[] {"", "", "", "", supplierName + " - Total:", total});
-	        	if(total > 0 && total < 5000) {
-	        		JOptionPane.showMessageDialog(null, "The lowest quotation from "+ supplierName + ": $" + total + " \nYour request is approved!");
+	            model2.addRow(new Object[] {"", "", "", "", supplierName1 + " - Total:", total1});
+	            if(lowestQuotationObj.length > 1) {
+	            	model3.addRow(new Object[] {"", "", "", "", supplierName2 + " - Total:", total2});
+	            }
+	        	if(total1 > 0 && total1 < 5000) {
+	        		JOptionPane.showMessageDialog(null, "The lowest quotation from "+ supplierName1 + ": $" + total1 + " \nYour request is approved!");
 	        		// save to DB - table Requests
-	        		requests.saveRequest(userId, total, 1, "This request is approved!");
-	        	} else if(total > 5000) {
-	        		JOptionPane.showMessageDialog(null, "The lowest quotation from "+ supplierName + ": $" + total + " \nYour request is pending as it is greater than $5000");
-	        		requests.saveRequest(userId, total, 2, "This request is pending for approval");
+	        		requests.saveRequest(userId, total1, 1, "This request is approved!");
+	        	} else if(total1 > 5000) {
+	        		JOptionPane.showMessageDialog(null, "Your request is pending as it is greater than $5000");
+	        		requests.saveRequest(userId, total1, 2, "This request is pending for approval");
+	        		requests.saveRequest(userId, total2, 2, "This request is pending for approval");
 	        	} else {
 	        		JOptionPane.showMessageDialog(null, "Please enter the quantity for items");
 	        	}
@@ -327,6 +379,7 @@ public class Process extends JFrame {
   	        			// user role
   	        			makeRequestPanel.setVisible(true);
   	        			((DefaultTableModel)tableLowestQuo.getModel()).setRowCount(0);
+  	        			((DefaultTableModel)tableSecondLowestQuo.getModel()).setRowCount(0);
   	        			tableRequests.setModel(requests.getAllRequests(modelRq, tableRequests, userId, userRole));
   	  	  	        	viewRequestsPanel.setVisible(false);
   	  	  	        	
