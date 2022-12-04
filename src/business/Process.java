@@ -163,7 +163,7 @@ public class Process extends JFrame {
 //	            Object[] rowData = new Object [table.getRowCount()];
 	            for (int i = 0; i < table.getRowCount(); i++) {  // Loop through the rows
 	                // 
-	            	if(Integer.parseInt(table.getValueAt(i, 3).toString()) > 0) {
+	            	if(!table.getValueAt(i, 3).toString().equals("") && Integer.parseInt(table.getValueAt(i, 3).toString()) > 0) {
 	            		columnData[i] = table.getValueAt(i, 1) + "-" + table.getValueAt(i, 3);
 	            	}
 	             }
