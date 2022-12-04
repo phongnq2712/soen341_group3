@@ -28,8 +28,12 @@ public class Process extends JFrame {
 	JTable tableRequests = new JTable();
 	JTable tableLowestQuo = new JTable();
 	JTable tableSecondLowestQuo = new JTable();
+	JTextField txtChooseRQ;
+	JPanel secondLowestPn = new JPanel();
 	int userId = 0;
 	int userRole = 0;
+	int total1 = 0;
+    int total2 = 0;
 	/**
 	 * Build all requests table
 	 * @return
@@ -82,6 +86,7 @@ public class Process extends JFrame {
         logoutPanel.setVisible(false);
         
         JPanel makeRequestPanel = new JPanel();
+        secondLowestPn.setLayout(new BoxLayout(secondLowestPn, BoxLayout.PAGE_AXIS));
         makeRequestPanel.setLayout(new BoxLayout(makeRequestPanel, BoxLayout.PAGE_AXIS));
 
         String itemName = "";
@@ -151,6 +156,29 @@ public class Process extends JFrame {
         makeRequestPanel.add(btnViewRequests);
         makeRequestPanel.add(label);
         
+        
+        JButton btnChooseRQ = new JButton("Choose Request");
+        btnChooseRQ.addActionListener(
+  	      new ActionListener()
+  	      {
+  	        public void actionPerformed(ActionEvent event)
+  	        {  	        	
+//        		requests.saveRequest(userId, total1, 2, "This request is pending for approval");
+//        		requests.saveRequest(userId, total2, 2, "This request is pending for approval");
+        		if(!txtChooseRQ.getText().trim().equals("")) {
+        			System.out.println(txtChooseRQ.getText());
+        			int choice = Integer.parseInt(txtChooseRQ.getText().trim());
+        			if(choice == 1) {
+        				requests.saveRequest(userId, total1, 2, "This request is pending for approval");
+        			} else if(choice == 2) {
+        				requests.saveRequest(userId, total2, 2, "This request is pending for approval");
+        			}
+        			JOptionPane.showMessageDialog(null, "Your request is pending as it is greater than $5000");
+        		}
+  	        }
+  	      }
+  	    );
+        
         btnCalculate.addActionListener(
 	      new ActionListener()
 	      {
@@ -182,14 +210,26 @@ public class Process extends JFrame {
 	                        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	                scroll3.setVerticalScrollBarPolicy(
 	                        JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-	                makeRequestPanel.add(scroll3);
+	                
+//	                makeRequestPanel.add(scroll3);
+	                secondLowestPn.setVisible(true);
+	                secondLowestPn.add(scroll3);
+	                
+	                JLabel lblChooseRQ = new JLabel("Choose the quotation (1:above - 2:below):");
+	                secondLowestPn.add(lblChooseRQ);
+	                
+	                txtChooseRQ = new JTextField();
+	                txtChooseRQ.setColumns(10);
+	              
+	                secondLowestPn.add(txtChooseRQ);
+	                secondLowestPn.add(btnChooseRQ);
+	                makeRequestPanel.add(secondLowestPn);
 	            }
 	            
 	            int seqNo = 0;
 	            String supplierName1 = "";
 	            String supplierName2 = "";
-	            int total1 = 0;
-	            int total2 = 0;
+	            
 //	            for(Quotations q: lowestQuotationObj) {
 //	            	if(q != null) {
 //        				seqNo ++;
@@ -237,9 +277,12 @@ public class Process extends JFrame {
 	        		// save to DB - table Requests
 	        		requests.saveRequest(userId, total1, 1, "This request is approved!");
 	        	} else if(total1 > 5000) {
-	        		JOptionPane.showMessageDialog(null, "Your request is pending as it is greater than $5000");
-	        		requests.saveRequest(userId, total1, 2, "This request is pending for approval");
-	        		requests.saveRequest(userId, total2, 2, "This request is pending for approval");
+//	        		JOptionPane.showMessageDialog(null, "Your request is pending as it is greater than $5000");
+//	        		requests.saveRequest(userId, total1, 2, "This request is pending for approval");
+//	        		requests.saveRequest(userId, total2, 2, "This request is pending for approval");
+//	        		if(!txtChooseRQ.getText().equals("")) {
+//	        			System.out.println(txtChooseRQ.getText());
+//	        		}
 	        	} else {
 	        		JOptionPane.showMessageDialog(null, "Please enter the quantity for items");
 	        	}
@@ -378,6 +421,7 @@ public class Process extends JFrame {
   	        		if(userArr[1] == 1) {
   	        			// user role
   	        			makeRequestPanel.setVisible(true);
+  	        			secondLowestPn.setVisible(false);
   	        			((DefaultTableModel)tableLowestQuo.getModel()).setRowCount(0);
   	        			((DefaultTableModel)tableSecondLowestQuo.getModel()).setRowCount(0);
   	        			tableRequests.setModel(requests.getAllRequests(modelRq, tableRequests, userId, userRole));
