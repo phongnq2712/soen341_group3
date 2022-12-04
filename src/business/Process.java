@@ -285,7 +285,7 @@ public class Process extends JFrame {
 	        		JOptionPane.showMessageDialog(null, "The lowest quotation from "+ supplierName1 + ": $" + total1 + " \nYour request is approved!");
 	        		// save to DB - table Requests
 	        		requests.saveRequest(userId, total1, 1, "This request is approved!");
-	        	} else {
+	        	} else if(total1 == 0) {
 	        		JOptionPane.showMessageDialog(null, "Please enter the quantity for items");
 	        	}
 	        }
