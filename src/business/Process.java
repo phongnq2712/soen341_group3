@@ -30,6 +30,7 @@ public class Process extends JFrame {
 	JTable tableSecondLowestQuo = new JTable();
 	JTextField txtChooseRQ;
 	JPanel secondLowestPn = new JPanel();
+	JPanel makeRequestSecondPanel = new JPanel();
 	int userId = 0;
 	int userRole = 0;
 	int total1 = 0;
@@ -88,6 +89,8 @@ public class Process extends JFrame {
         JPanel makeRequestPanel = new JPanel();
         secondLowestPn.setLayout(new BoxLayout(secondLowestPn, BoxLayout.PAGE_AXIS));
         makeRequestPanel.setLayout(new BoxLayout(makeRequestPanel, BoxLayout.PAGE_AXIS));
+        
+        makeRequestSecondPanel.setLayout(new BoxLayout(makeRequestSecondPanel, BoxLayout.PAGE_AXIS));
 
         String itemName = "";
         int itemQty = 0;
@@ -95,8 +98,6 @@ public class Process extends JFrame {
         ResultSet rs = null;
         Connection con = JavaSQLite.connectDB();
         try {
-//        	PreparedStatement pst = con.prepareStatement("select * from items");
-//            ResultSet rs = pst.executeQuery();
         	stmt = con.createStatement();
             rs = stmt.executeQuery("SELECT distinct name FROM quotations");
             int seq = 0;
@@ -163,8 +164,6 @@ public class Process extends JFrame {
   	      {
   	        public void actionPerformed(ActionEvent event)
   	        {  	        	
-//        		requests.saveRequest(userId, total1, 2, "This request is pending for approval");
-//        		requests.saveRequest(userId, total2, 2, "This request is pending for approval");
         		if(!txtChooseRQ.getText().trim().equals("")) {
         			System.out.println(txtChooseRQ.getText());
         			int choice = Integer.parseInt(txtChooseRQ.getText().trim());
@@ -211,19 +210,29 @@ public class Process extends JFrame {
 	                scroll3.setVerticalScrollBarPolicy(
 	                        JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 	                
-//	                makeRequestPanel.add(scroll3);
+	                makeRequestSecondPanel.add(scroll3);
+	                makeRequestPanel.add(makeRequestSecondPanel);
+	                makeRequestSecondPanel.setVisible(true);
 	                secondLowestPn.setVisible(true);
-	                secondLowestPn.add(scroll3);
+//	                secondLowestPn.add(scroll3);
+	                
 	                
 	                JLabel lblChooseRQ = new JLabel("Choose the quotation (1:above - 2:below):");
+	                lblChooseRQ.setPreferredSize(new Dimension(10, 5));
 	                secondLowestPn.add(lblChooseRQ);
 	                
 	                txtChooseRQ = new JTextField();
-	                txtChooseRQ.setColumns(10);
+	                txtChooseRQ.setColumns(5);
+	                
+	                GridLayout experimentLayout = new GridLayout(0,1);
+	                secondLowestPn.setLayout(new FlowLayout(FlowLayout.CENTER));
+	                secondLowestPn.setLayout(experimentLayout);
+	                secondLowestPn.setMaximumSize(new Dimension(300,150));
 	              
 	                secondLowestPn.add(txtChooseRQ);
 	                secondLowestPn.add(btnChooseRQ);
-	                makeRequestPanel.add(secondLowestPn);
+//	                makeRequestPanel.add(secondLowestPn);
+	                outPanel.add(secondLowestPn);
 	            }
 	            
 	            int seqNo = 0;
@@ -276,13 +285,6 @@ public class Process extends JFrame {
 	        		JOptionPane.showMessageDialog(null, "The lowest quotation from "+ supplierName1 + ": $" + total1 + " \nYour request is approved!");
 	        		// save to DB - table Requests
 	        		requests.saveRequest(userId, total1, 1, "This request is approved!");
-	        	} else if(total1 > 5000) {
-//	        		JOptionPane.showMessageDialog(null, "Your request is pending as it is greater than $5000");
-//	        		requests.saveRequest(userId, total1, 2, "This request is pending for approval");
-//	        		requests.saveRequest(userId, total2, 2, "This request is pending for approval");
-//	        		if(!txtChooseRQ.getText().equals("")) {
-//	        			System.out.println(txtChooseRQ.getText());
-//	        		}
 	        	} else {
 	        		JOptionPane.showMessageDialog(null, "Please enter the quantity for items");
 	        	}
@@ -422,6 +424,7 @@ public class Process extends JFrame {
   	        			// user role
   	        			makeRequestPanel.setVisible(true);
   	        			secondLowestPn.setVisible(false);
+  	        			makeRequestSecondPanel.setVisible(false);
   	        			((DefaultTableModel)tableLowestQuo.getModel()).setRowCount(0);
   	        			((DefaultTableModel)tableSecondLowestQuo.getModel()).setRowCount(0);
   	        			tableRequests.setModel(requests.getAllRequests(modelRq, tableRequests, userId, userRole));
@@ -453,6 +456,7 @@ public class Process extends JFrame {
 	        	viewRequestsPanel.setVisible(false);
 	        	makeRequestPanel.setVisible(false);
 	        	logoutPanel.setVisible(false);
+	        	secondLowestPn.setVisible(false);
 	        }
 	      }
 	    );
