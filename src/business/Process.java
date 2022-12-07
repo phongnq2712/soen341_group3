@@ -432,6 +432,11 @@ public class Process extends JFrame {
   	  	  	        	
   	        		} else if(userArr[1] == 2) {
   	        			// vendors role
+					frame1.setVisible(false);
+  	    	        		VendorUpdate.main(frame1, txtUserName.getText().trim());
+  	    	        		loginPanel.setVisible(true);
+  	    	        		logoutPanel.setVisible(false);
+					
   	        		} else {
   	        			// admin role
   	        			makeRequestPanel.setVisible(false);
