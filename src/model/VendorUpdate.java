@@ -56,7 +56,6 @@ public class VendorUpdate extends JFrame {
 					JButton btnReturn = new JButton("Logout");
 					btnReturn.setBounds(30, 184, 117, 29);
 					vendorPanel.add(btnReturn);
-					vendorframe.setVisible(false);
 					
 					
 			        Statement stmt = null;
@@ -115,6 +114,7 @@ public class VendorUpdate extends JFrame {
 					btnReturn.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						loginframe.setVisible(true);
+						vendorframe.setVisible(false);
 						}
 					});
 					
