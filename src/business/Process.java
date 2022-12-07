@@ -14,6 +14,7 @@ import model.Quotations;
 import model.Requests;
 import model.User;
 import model.UserAcctCreation;
+import model.VendorUpdate;
 
 public class Process extends JFrame {
 	private static final long serialVersionUID = 1L;
